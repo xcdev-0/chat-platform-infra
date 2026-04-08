@@ -1,0 +1,6 @@
+apiVersion: v2
+name: chat-server
+description: Helm chart for EJ Labs Market chat-server
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

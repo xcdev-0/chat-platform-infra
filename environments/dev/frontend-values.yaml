@@ -1,0 +1,35 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/spotifyyyyy/chat-frontend
+  tag: dev-latest
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: dockerhub-secret
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: frontend.kube.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+backend:
+  apiUrl: https://backend.kube.com/api
+  wsUrl: wss://backend.kube.com/ws/chat
+
+frontend:
+  debug: true

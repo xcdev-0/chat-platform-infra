@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "chat-server.configMapName" . }}
+  labels:
+    {{- include "chat-server.labels" . | nindent 4 }}
+data:
+  SPRING_PROFILES_ACTIVE: {{ .Values.spring.profile | quote }}
+  FRONT_END_URL: {{ .Values.frontend.url | quote }}
+  DB_URL: {{ .Values.database.url | quote }}
+  DB_USERNAME: {{ .Values.database.username | quote }}
+  JPA_DDL_AUTO: {{ .Values.database.ddlAuto | quote }}
+  FLYWAY_ENABLED: {{ .Values.database.flywayEnabled | quote }}
+  FLYWAY_BASELINE_ON_MIGRATE: {{ .Values.database.flywayBaselineOnMigrate | quote }}
+  REDIS_HOST: {{ .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
+  REDIS_USERNAME: {{ .Values.redis.username | quote }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
+  KAFKA_TOPIC_CHAT_MESSAGE_CREATED: {{ .Values.kafka.topics.chatMessageCreated | quote }}
+  KAFKA_TOPIC_CHAT_ROOM_READ: {{ .Values.kafka.topics.chatRoomRead | quote }}
+  KAFKA_TOPIC_CHAT_DLQ: {{ .Values.kafka.topics.chatDlq | quote }}
+  KAFKA_CONSUMER_MAX_RETRY_COUNT: {{ .Values.kafka.consumer.maxRetryCount | quote }}
+  KAFKA_CONSUMER_RETRY_BACKOFF_MS: {{ .Values.kafka.consumer.retryBackoffMs | quote }}
+  OUTBOX_RELAY_FIXED_DELAY_MS: {{ .Values.outbox.relay.fixedDelayMs | quote }}
+  OUTBOX_RELAY_BATCH_SIZE: {{ .Values.outbox.relay.batchSize | quote }}
+  OUTBOX_RELAY_MAX_RETRY_COUNT: {{ .Values.outbox.relay.maxRetryCount | quote }}
+  SPRINGDOC_API_DOCS_ENABLED: {{ .Values.observability.springdocApiDocsEnabled | quote }}
+  SPRINGDOC_SWAGGER_UI_ENABLED: {{ .Values.observability.springdocSwaggerUiEnabled | quote }}
+  LOG_ROOT_LEVEL: {{ .Values.observability.logRootLevel | quote }}
+  LOG_SPRING_LEVEL: {{ .Values.observability.logSpringLevel | quote }}
+  LOG_APP_LEVEL: {{ .Values.observability.logAppLevel | quote }}
