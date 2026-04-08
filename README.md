@@ -46,3 +46,4 @@ code/infra
 
 가장 먼저 손댈 파일은 `helm/chat-server` 쪽입니다.  
 현재 애플리케이션은 이미 PostgreSQL + Flyway로 바뀌었는데, 예전 인프라 자산에는 MySQL 기준 값이 남아 있어서 배포 기준이 어긋나 있습니다.
+# chat-platform-infra
