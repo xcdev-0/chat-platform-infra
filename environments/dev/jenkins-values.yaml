@@ -50,6 +50,10 @@ controller:
       welcome-message: |
         jenkins:
           systemMessage: "Jenkins is managed by Helm and JCasC."
+      git-host-key-verification: |
+        security:
+          gitHostKeyVerificationConfiguration:
+            sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
       credentials: |
         credentials:
           system:
