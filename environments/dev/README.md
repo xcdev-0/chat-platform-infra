@@ -8,6 +8,7 @@
 - `frontend-values.yaml`
 - `jenkins-values.yaml`
 - `argocd-values.yaml`
+- `postgresql-values.yaml`
 - ingress host
 - image tag 정책
 - database / redis / kafka endpoint
@@ -38,6 +39,10 @@ helm upgrade --install jenkins-controller ../../helm/jenkins-controller \
 helm upgrade --install argocd argo/argo-cd \
   -f argocd-values.yaml \
   -n argocd --create-namespace
+
+helm upgrade --install postgresql bitnami/postgresql \
+  -f postgresql-values.yaml \
+  -n dev --create-namespace
 ```
 
 ## 주의
