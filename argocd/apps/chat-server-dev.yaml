@@ -12,7 +12,7 @@ spec:
     helm:
       releaseName: chat-server
       valueFiles:
-        - ../../environments/dev/chat-server-values.yaml
+        - ../../environments/dev/apps/chat-server-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
