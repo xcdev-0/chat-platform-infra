@@ -1,4 +1,7 @@
 controller:
+  image:
+    tag: lts-jdk17
+
   admin:
     createSecret: true
     existingSecret: jenkins-admin-secret
@@ -28,8 +31,9 @@ controller:
     - ssh-agent
     - docker-workflow
     - github
+    - timestamper
 
-  initializeOnce: true
+  initializeOnce: false
 
   additionalExistingSecrets:
     - name: jenkins-github-ssh
