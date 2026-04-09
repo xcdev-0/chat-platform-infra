@@ -7,6 +7,7 @@
 - `chat-server-values.yaml`
 - `frontend-values.yaml`
 - `jenkins-values.yaml`
+- `argocd-values.yaml`
 - ingress host
 - image tag 정책
 - database / redis / kafka endpoint
@@ -33,6 +34,10 @@ kubectl apply -f jenkins-secrets.example.yaml
 helm upgrade --install jenkins-controller ../../helm/jenkins-controller \
   -f jenkins-values.yaml \
   -n dev --create-namespace
+
+helm upgrade --install argocd argo/argo-cd \
+  -f argocd-values.yaml \
+  -n argocd --create-namespace
 ```
 
 ## 주의

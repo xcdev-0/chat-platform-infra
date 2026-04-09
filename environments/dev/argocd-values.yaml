@@ -1,0 +1,18 @@
+global:
+  domain: argocd.kube.com
+
+configs:
+  params:
+    server.insecure: "true"
+
+server:
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostname: argocd.kube.com
+    path: /
+    pathType: Prefix
+    tls: false
+    annotations: {}

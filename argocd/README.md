@@ -12,3 +12,8 @@
 
 - Jenkins는 이미지를 빌드하고 Helm values의 tag만 갱신
 - 실제 배포 반영은 Argo CD가 Git 변경을 감지해 수행
+
+현재 시작점:
+
+- `apps/chat-server-dev.yaml`
+- Argo CD 설치 후 `kubectl apply -f argocd/apps/chat-server-dev.yaml`
