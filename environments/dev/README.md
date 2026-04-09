@@ -47,6 +47,6 @@ helm upgrade --install postgresql bitnami/postgresql \
 
 ## 주의
 
-- `chat-server-values.yaml`은 외부 Secret `ejlabs-chat-server-secret`을 참조합니다.
+- `chat-server-values.yaml`은 dev 기준으로 chart가 자체 Secret을 생성합니다.
 - 민감값은 values 파일에 직접 넣지 않고 Kubernetes Secret으로 따로 관리합니다.
 - `jenkins-secrets.example.yaml`은 예시 파일입니다. 실제 private key, Docker Hub token을 넣은 뒤 별도 비공개 파일로 관리해야 합니다.

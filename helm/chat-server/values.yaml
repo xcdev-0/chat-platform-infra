@@ -127,11 +127,9 @@ secret:
     DB_PASSWORD: change-me
     REDIS_PASSWORD: change-me
     JWT_SECRET: change-me
-    KAFKA_PASSWORD: change-me
-    KAFKA_TRUSTSTORE_PASSWORD: change-me
 
 truststore:
-  enabled: true
+  enabled: false
   secretName: kafka-truststore
   mountPath: /app/config
   fileName: kafka.truststore.jks
