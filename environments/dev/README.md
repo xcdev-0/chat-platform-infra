@@ -9,6 +9,8 @@
 - `jenkins-values.yaml`
 - `argocd-values.yaml`
 - `postgresql-values.yaml`
+- `redis-values.yaml`
+- `kafka-values.yaml`
 - ingress host
 - image tag 정책
 - database / redis / kafka endpoint
@@ -43,10 +45,19 @@ helm upgrade --install argocd argo/argo-cd \
 helm upgrade --install postgresql bitnami/postgresql \
   -f postgresql-values.yaml \
   -n dev --create-namespace
+
+helm upgrade --install redis bitnami/redis \
+  -f redis-values.yaml \
+  -n dev --create-namespace
+
+helm upgrade --install kafka bitnami/kafka \
+  -f kafka-values.yaml \
+  -n dev --create-namespace
 ```
 
 ## 주의
 
 - `chat-server-values.yaml`은 dev 기준으로 chart가 자체 Secret을 생성합니다.
+- `kafka-values.yaml`은 Docker Hub에서 현재 내려가지 않는 기본 `bitnami/kafka` 대신 `bitnamilegacy/kafka`를 사용합니다.
 - 민감값은 values 파일에 직접 넣지 않고 Kubernetes Secret으로 따로 관리합니다.
 - `jenkins-secrets.example.yaml`은 예시 파일입니다. 실제 private key, Docker Hub token을 넣은 뒤 별도 비공개 파일로 관리해야 합니다.
