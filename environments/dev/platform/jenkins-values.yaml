@@ -76,7 +76,7 @@ controller:
                       password: "${jenkins-dockerhub-password}"
       jobs: |
         jobs:
-          - script: >
+          - script: |
               pipelineJob('chat-server-dev') {
                 definition {
                   cpsScm {
@@ -93,6 +93,7 @@ controller:
                   }
                 }
               }
+          - script: |
               pipelineJob('frontend-dev') {
                 definition {
                   cpsScm {
