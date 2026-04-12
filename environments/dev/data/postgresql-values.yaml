@@ -1,4 +1,6 @@
 auth:
+  enablePostgresUser: true
+  postgresPassword: Gw1nG0DJqo
   username: chat
   password: chat1234
   database: chatdb
@@ -6,6 +8,13 @@ auth:
 architecture: standalone
 
 primary:
+  initdb:
+    user: postgres
+    password: Gw1nG0DJqo
+    scripts:
+      00-enable-postgis.sql: |
+        \connect chatdb
+        CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
   persistence:
     enabled: true
     size: 8Gi

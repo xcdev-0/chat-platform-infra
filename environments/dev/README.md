@@ -41,27 +41,12 @@ kubectl apply -f platform/jenkins-secrets.example.yaml
 helm upgrade --install jenkins-controller ../../helm/jenkins-controller \
   -f platform/jenkins-values.yaml \
   -n dev --create-namespace
-
-helm upgrade --install argocd argo/argo-cd \
-  -f platform/argocd-values.yaml \
-  -n argocd --create-namespace
-
-helm upgrade --install postgresql bitnami/postgresql \
-  -f data/postgresql-values.yaml \
-  -n dev --create-namespace
-
-helm upgrade --install redis bitnami/redis \
-  -f data/redis-values.yaml \
-  -n dev --create-namespace
-
-helm upgrade --install kafka bitnami/kafka \
-  -f data/kafka-values.yaml \
-  -n dev --create-namespace
 ```
 
 ## 주의
 
 - `apps/chat-server-values.yaml`은 dev 기준으로 chart가 자체 Secret을 생성합니다.
+- `data/postgresql-values.yaml`은 `primary.initdb.scripts`로 첫 부팅 시 `postgis` extension을 생성합니다. 이 스크립트는 빈 볼륨에서만 실행되므로, 이미 초기화된 PVC에는 재실행되지 않습니다.
 - `data/kafka-values.yaml`은 Docker Hub에서 현재 내려가지 않는 기본 `bitnami/kafka` 대신 `bitnamilegacy/kafka`를 사용합니다.
 - 민감값은 values 파일에 직접 넣지 않고 Kubernetes Secret으로 따로 관리합니다.
 - `platform/jenkins-secrets.example.yaml`은 예시 파일입니다. 실제 private key, Docker Hub token을 넣은 뒤 별도 비공개 파일로 관리해야 합니다.

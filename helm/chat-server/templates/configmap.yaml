@@ -15,6 +15,9 @@ data:
   REDIS_HOST: {{ .Values.redis.host | quote }}
   REDIS_PORT: {{ .Values.redis.port | quote }}
   REDIS_USERNAME: {{ .Values.redis.username | quote }}
+  SPRING_DATA_REDIS_HOST: {{ .Values.redis.host | quote }}
+  SPRING_DATA_REDIS_PORT: {{ .Values.redis.port | quote }}
+  SPRING_DATA_REDIS_USERNAME: {{ .Values.redis.username | quote }}
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
   KAFKA_TOPIC_CHAT_MESSAGE_CREATED: {{ .Values.kafka.topics.chatMessageCreated | quote }}
   KAFKA_TOPIC_CHAT_ROOM_READ: {{ .Values.kafka.topics.chatRoomRead | quote }}

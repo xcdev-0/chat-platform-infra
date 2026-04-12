@@ -126,7 +126,7 @@ secret:
   env:
     DB_PASSWORD: change-me
     REDIS_PASSWORD: change-me
-    JWT_SECRET: change-me
+    JWT_SECRET: change-me-change-me-change-me-change-me
 
 truststore:
   enabled: false

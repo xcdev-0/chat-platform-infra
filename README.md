@@ -21,6 +21,12 @@ code/infra
 ├── environments
 │   └── dev
 │       └── README.md
+├── kubeadm
+│   ├── README.md
+│   └── docs
+│       ├── 01-target-architecture.md
+│       ├── 02-bootstrap-runbook.md
+│       └── 03-post-install-addons.md
 └── helm
     ├── chat-server
     │   └── README.md
@@ -28,23 +34,70 @@ code/infra
         └── README.md
 ```
 
-## 먼저 할 일
+## 역할 분리
 
-1. `chat-server` Helm values를 현재 앱 구조에 맞게 정리
-   - MySQL 기준 값 제거
-   - PostgreSQL, Flyway, Redis, Kafka 환경변수 반영
-2. `frontend` Helm values 정리
-   - backend URL, websocket URL, ingress host 기준 확정
-3. 백엔드 Jenkinsfile 작성
-   - build / test / image push / Helm values tag update
-4. 프론트 Jenkinsfile 정리
-   - 기존 파이프라인 재사용 여부 점검
-5. Argo CD app-of-apps 정리
-   - `chat-server`, `frontend` 두 앱부터 자동 동기화
+- `helm/`
+  - 클러스터 위에 배포할 애플리케이션과 플랫폼 차트
+- `environments/`
+  - 환경별 override values
+- `argocd/`
+  - GitOps application manifest
+- `cicd/`
+  - Jenkins 등 CI/CD 보조 스크립트
+- `kubeadm/`
+  - 클러스터 자체를 만드는 과정과 운영 runbook
 
-## 추천 순서
+## ingress 
 
-가장 먼저 손댈 파일은 `helm/chat-server` 쪽입니다.  
-현재 애플리케이션은 이미 PostgreSQL + Flyway로 바뀌었는데, 예전 인프라 자산에는 MySQL 기준 값이 남아 있어서 배포 기준이 어긋나 있습니다.
-# chat-platform-infra
-# chat-platform-infra
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+  -n ingress-nginx \
+  --create-namespace \
+  --set controller.service.type=NodePort
+```
+
+## argocd
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argocd argo/argo-cd \
+  -f environments/dev/platform/argocd-values.yaml \
+  -n argocd \
+  --create-namespace
+```
+
+## data
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+helm upgrade --install postgresql bitnami/postgresql \
+  -f environments/dev/data/postgresql-values.yaml \
+  -n dev --create-namespace
+
+helm upgrade --install redis bitnami/redis \
+  -f environments/dev/data/redis-values.yaml \
+  -n dev --create-namespace
+
+helm upgrade --install kafka bitnami/kafka \
+  -f environments/dev/data/kafka-values.yaml \
+  -n dev --create-namespace
+```
+
+## apps
+
+```bash
+helm upgrade --install chat-server ./helm/chat-server \
+  -f environments/dev/apps/chat-server-values.yaml \
+  -n dev --create-namespace
+
+helm upgrade --install frontend ./helm/frontend \
+  -f environments/dev/apps/frontend-values.yaml \
+  -n dev --create-namespace
+```
