@@ -90,6 +90,21 @@ helm upgrade --install kafka bitnami/kafka \
   -n dev --create-namespace
 ```
 
+## jenkins
+
+```bash
+kubectl apply -f environments/dev/platform/jenkins-secrets.local.yaml
+
+helm upgrade --install jenkins ./helm/jenkins-controller \
+  -f environments/dev/platform/jenkins-values.yaml \
+  -n dev --create-namespace
+```
+
+설치가 끝나면 Jenkins 안에 `chat-server-dev`, `frontend-dev` pipeline job 이 자동으로 생성됩니다.
+
+```
+```
+
 ## apps
 
 ```bash

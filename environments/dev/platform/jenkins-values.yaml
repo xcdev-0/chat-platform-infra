@@ -24,6 +24,7 @@ controller:
   installPlugins:
     - kubernetes
     - workflow-aggregator
+    - job-dsl
     - git
     - configuration-as-code
     - credentials-binding
@@ -73,6 +74,41 @@ controller:
                       description: Docker Hub credentials
                       username: "${jenkins-dockerhub-username}"
                       password: "${jenkins-dockerhub-password}"
+      jobs: |
+        jobs:
+          - script: >
+              pipelineJob('chat-server-dev') {
+                definition {
+                  cpsScm {
+                    scm {
+                      git {
+                        remote {
+                          url('https://github.com/chat-app-12450/cochat-spring-server.git')
+                        }
+                        branch('*/main')
+                      }
+                    }
+                    scriptPath('Jenkinsfile')
+                    lightweight(true)
+                  }
+                }
+              }
+              pipelineJob('frontend-dev') {
+                definition {
+                  cpsScm {
+                    scm {
+                      git {
+                        remote {
+                          url('https://github.com/chat-app-12450/cochat-frontend.git')
+                        }
+                        branch('*/main')
+                      }
+                    }
+                    scriptPath('Jenkinsfile')
+                    lightweight(true)
+                  }
+                }
+              }
 
 persistence:
   enabled: true
