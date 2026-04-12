@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/spotifyyyyy/chat-server
-  tag: cd2d178d3392
+  tag: 47fb019a14e0
   pullPolicy: Always
 
 imagePullSecrets: []
