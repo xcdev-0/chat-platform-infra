@@ -10,7 +10,8 @@ imagePullSecrets: []
 ingress:
   enabled: true
   className: nginx
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   hosts:
     - host: backend.kube.com
       paths:
@@ -18,7 +19,10 @@ ingress:
           pathType: Prefix
         - path: /ws/chat
           pathType: Prefix
-  tls: []
+  tls:
+    - secretName: kube-com-tls
+      hosts:
+        - backend.kube.com
 
 resources:
   requests:
@@ -32,7 +36,7 @@ spring:
   profile: prod
 
 frontend:
-  url: http://frontend.kube.com
+  url: https://frontend.kube.com
 
 database:
   url: jdbc:postgresql://postgresql.dev.svc.cluster.local:5432/chatdb
@@ -76,7 +80,7 @@ secret:
     DB_PASSWORD: chat1234
     REDIS_PASSWORD: ""
     JWT_SECRET: T+FITVBc8qEi9tZ/TgN7mfZ9wb0BqArbh4B+RMZ9zKU=
-    AUTH_COOKIE_SECURE: "false"
+    AUTH_COOKIE_SECURE: "true"
 
 truststore:
   enabled: false

@@ -16,10 +16,14 @@ controller:
     hostName: jenkins.kube.com
     path: /
     pathType: Prefix
-    annotations: {}
-    tls: []
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    tls:
+      - secretName: kube-com-tls
+        hosts:
+          - jenkins.kube.com
 
-  jenkinsUrlProtocol: http
+  jenkinsUrlProtocol: https
 
   installPlugins:
     - kubernetes

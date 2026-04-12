@@ -1,1 +1,2 @@
 environments/dev/platform/jenkins-secrets.local.yaml
+certs/generated/

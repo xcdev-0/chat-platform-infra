@@ -10,13 +10,17 @@ imagePullSecrets: []
 ingress:
   enabled: true
   className: nginx
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   hosts:
     - host: frontend.kube.com
       paths:
         - path: /
           pathType: Prefix
-  tls: []
+  tls:
+    - secretName: kube-com-tls
+      hosts:
+        - frontend.kube.com
 
 resources:
   requests:
@@ -27,8 +31,8 @@ resources:
     memory: 512Mi
 
 backend:
-  apiUrl: http://backend.kube.com/api
-  wsUrl: ws://backend.kube.com/ws/chat
+  apiUrl: https://backend.kube.com/api
+  wsUrl: wss://backend.kube.com/ws/chat
 
 frontend:
   debug: true
