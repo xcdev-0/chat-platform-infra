@@ -81,6 +81,7 @@ secret:
     REDIS_PASSWORD: ""
     JWT_SECRET: T+FITVBc8qEi9tZ/TgN7mfZ9wb0BqArbh4B+RMZ9zKU=
     AUTH_COOKIE_SECURE: "true"
+    AUTH_COOKIE_DOMAIN: "kube.com"
 
 truststore:
   enabled: false
