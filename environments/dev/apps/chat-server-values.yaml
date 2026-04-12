@@ -62,7 +62,7 @@ kafka:
 
 outbox:
   relay:
-    fixedDelayMs: 1000
+    fixedDelayMs: 200
     batchSize: 100
     maxRetryCount: 10
 
