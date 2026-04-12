@@ -120,3 +120,4 @@ serviceAccount:
 
 agent:
   enabled: true
+  websocket: true
