@@ -1,0 +1,10 @@
+
+clusterName: capstone-dev-eks
+region: ap-northeast-2
+replicaCount: 2
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::325018924764:role/capstone-dev-aws-load-balancer-controller-role

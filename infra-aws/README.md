@@ -119,19 +119,15 @@ AWS
 - 리소스 requests/limits
 - 장애 대응 문서
 
-## 이 디렉토리에서 만들 것
+## 이 디렉토리 구조
 
 ```text
-aws
+infra-aws
 ├── README.md
+├── helm-values
 └── terraform
-    ├── ec2-k3s
     └── eks
 ```
-
-`ec2-k3s`:
-- 빠른 검증용
-- 보조 실험용
 
 `eks`:
 - 메인 포트폴리오 대상

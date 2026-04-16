@@ -1,0 +1,127 @@
+controller:
+  image:
+    tag: lts-jdk17
+
+  admin:
+    createSecret: true
+    existingSecret: jenkins-admin-secret
+
+  numExecutors: 2
+
+  serviceType: ClusterIP
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostName: jenkins.kube.com
+    path: /
+    pathType: Prefix
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    tls:
+      - secretName: kube-com-tls
+        hosts:
+          - jenkins.kube.com
+
+  jenkinsUrlProtocol: https
+
+  installPlugins:
+    - kubernetes
+    - workflow-aggregator
+    - job-dsl
+    - git
+    - configuration-as-code
+    - credentials-binding
+    - ssh-credentials
+    - ssh-agent
+    - docker-workflow
+    - github
+    - timestamper
+
+  initializeOnce: false
+
+  additionalExistingSecrets:
+    - name: jenkins-github-ssh
+      keyName: private-key
+    - name: jenkins-dockerhub
+      keyName: username
+    - name: jenkins-dockerhub
+      keyName: password
+
+  JCasC:
+    defaultConfig: true
+    overwriteConfiguration: true
+    configScripts:
+      welcome-message: |
+        jenkins:
+          systemMessage: "Jenkins is managed by Helm and JCasC."
+      git-host-key-verification: |
+        security:
+          gitHostKeyVerificationConfiguration:
+            sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
+      credentials: |
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                  - basicSSHUserPrivateKey:
+                      scope: GLOBAL
+                      id: github-ssh
+                      username: git
+                      description: GitHub SSH key for infra repository push
+                      privateKeySource:
+                        directEntry:
+                          privateKey: "${jenkins-github-ssh-private-key}"
+                  - usernamePassword:
+                      scope: GLOBAL
+                      id: dockerhub-credentials
+                      description: Docker Hub credentials
+                      username: "${jenkins-dockerhub-username}"
+                      password: "${jenkins-dockerhub-password}"
+      jobs: |
+        jobs:
+          - script: |
+              pipelineJob('chat-server-dev') {
+                definition {
+                  cpsScm {
+                    scm {
+                      git {
+                        remote {
+                          url('https://github.com/chat-app-12450/cochat-spring-server.git')
+                        }
+                        branch('*/main')
+                      }
+                    }
+                    scriptPath('Jenkinsfile')
+                    lightweight(true)
+                  }
+                }
+              }
+          - script: |
+              pipelineJob('frontend-dev') {
+                definition {
+                  cpsScm {
+                    scm {
+                      git {
+                        remote {
+                          url('https://github.com/chat-app-12450/cochat-frontend.git')
+                        }
+                        branch('*/main')
+                      }
+                    }
+                    scriptPath('Jenkinsfile')
+                    lightweight(true)
+                  }
+                }
+              }
+
+persistence:
+  enabled: true
+  size: 10Gi
+
+serviceAccount:
+  create: true
+
+agent:
+  enabled: true
+  websocket: true

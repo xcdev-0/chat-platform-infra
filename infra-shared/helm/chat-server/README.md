@@ -4,7 +4,7 @@
 
 우선 반영해야 할 것:
 
-- PostgreSQL datasource
+- MySQL datasource
 - Flyway 기반 스키마 관리
 - Redis endpoint
 - Kafka bootstrap server
@@ -13,4 +13,4 @@
 
 첫 작업:
 
-- 기존 MySQL 기준 배포 설정을 PostgreSQL 기준으로 바꾸기
+- MySQL 기준 datasource/Flyway 값 유지하기

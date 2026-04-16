@@ -8,11 +8,11 @@ spec:
   source:
     repoURL: https://github.com/xcdev-0/chat-platform-infra.git
     targetRevision: main
-    path: helm/frontend
+    path: infra-shared/helm/frontend
     helm:
       releaseName: frontend
       valueFiles:
-        - ../../environments/dev/apps/frontend-values.yaml
+        - ../../../infra-local/environments/dev/apps/frontend-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev

@@ -86,7 +86,7 @@ frontend:
   url: https://frontend.kube.com
 
 database:
-  url: jdbc:postgresql://postgresql.default.svc.cluster.local:5432/chatdb
+  url: jdbc:mysql://mysql.default.svc.cluster.local:3306/chatdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
   username: chat
   ddlAuto: validate
   flywayEnabled: true

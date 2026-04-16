@@ -15,7 +15,9 @@
 3. `single NAT gateway`
 4. `EKS cluster`
 5. `managed node group`
-6. `kubectl` 연결용 output
+6. `OIDC provider`
+7. `aws-load-balancer-controller` 용 `IRSA role`
+8. `kubectl` 연결용 output
 
 ## 파일 구조
 
@@ -24,12 +26,14 @@ eks
 ├── .gitignore
 ├── main.tf
 ├── outputs.tf
+├── policies
 ├── providers.tf
 ├── terraform.tfvars.example
 ├── variables.tf
 ├── versions.tf
 └── modules
     ├── cluster
+    ├── irsa-role
     ├── network
     └── node-group
 ```
@@ -68,7 +72,7 @@ eks
 ## 사용 순서
 
 ```bash
-cd code/infra/aws/terraform/eks
+cd code/infra/infra-aws/terraform/eks
 
 cp terraform.tfvars.example terraform.tfvars
 ```
@@ -98,14 +102,15 @@ aws eks update-kubeconfig --region <region> --name <cluster-name>
 
 ## 다음 단계
 
-1. `ECR`
-2. `OIDC / IRSA`
-3. `AWS Load Balancer Controller`
+1. `AWS Load Balancer Controller`
+2. `Ingress -> ALB`
+3. `ECR`
 4. `Argo CD`
 5. `app` 배포
 
 ## 주의
 
 - 이 스택은 포트폴리오 기준 1차 베이스입니다.
-- 아직 `IRSA`, `ALB Controller`, `external-dns`, `ACM`, `Route53` 는 포함하지 않았습니다.
+- `OIDC / IRSA` 까지는 포함되어 있습니다.
+- 아직 `AWS Load Balancer Controller` 설치, `external-dns`, `ACM`, `Route53` 는 포함하지 않았습니다.
 - EKS 비용은 control plane 자체 비용이 있으므로, 띄워둔 뒤 방치하지 않는 게 중요합니다.

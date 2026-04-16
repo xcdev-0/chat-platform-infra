@@ -70,9 +70,9 @@ module "node_group" {
   common_tags    = local.common_tags
 }
 
+# EKS 클러스터의 OIDC issuer를 신뢰하도록 만듬
+# OIDC provider로 등록하기
 resource "aws_iam_openid_connect_provider" "cluster" {
-  # pod 용 IAM role(IRSA)은 AWS 서비스 principal 이 아니라
-  # EKS OIDC 토큰 기반으로 assume 하므로 issuer 를 IAM 에 등록해야 한다.
   url = module.cluster.cluster_oidc_issuer
 
   client_id_list = ["sts.amazonaws.com"]
@@ -86,8 +86,8 @@ resource "aws_iam_openid_connect_provider" "cluster" {
 }
 
 module "aws_load_balancer_controller_irsa" {
-  # 첫 IRSA 대상은 aws-load-balancer-controller 로 잡는다.
-  # 이 role 은 kube-system/aws-load-balancer-controller ServiceAccount 를 쓰는 pod 만 assume 가능하다.
+  # 이 role 은 kube-system/aws-load-balancer-controller 
+  # ServiceAccount를 쓰는 pod 만 assume 가능하다.
   source = "./modules/irsa-role"
 
   role_name            = "${local.name}-aws-load-balancer-controller-role"

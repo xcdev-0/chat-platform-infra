@@ -1,0 +1,25 @@
+# EKS + AWS Load Balancer Controller 용 chat-server override values
+# 실제 적용 전 아래 host / frontend.url 은 보유한 도메인으로 바꿔야 한다.
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/group.name: capstone-public
+    alb.ingress.kubernetes.io/group.order: "20"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/success-codes: "200"
+  hosts:
+    - host: api.example.com
+      paths:
+        - path: /api
+          pathType: Prefix
+        - path: /ws/chat
+          pathType: Prefix
+  tls: []
+
+frontend:
+  url: https://frontend.example.com

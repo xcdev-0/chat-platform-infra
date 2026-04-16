@@ -1,53 +1,41 @@
 # code/infra
 
-이 디렉토리는 `EJ Labs Market`의 쿠버네티스 배포와 CI/CD 구성을 새로 정리하는 기준점입니다.  
-기존 루트의 `infra/`는 실험 흔적과 예전 설정이 섞여 있어서, 여기서는 현재 애플리케이션 구조에 맞는 최소한의 실전 배포 자산만 관리합니다.
+이 저장소는 `EJ Labs Market` 인프라 자산을 환경 기준으로 분리해 관리합니다.
 
-## 목표
-
-- `chat-server`, `frontend`를 Kubernetes에 배포
-- Jenkins로 이미지 build/push
-- Argo CD로 Helm values 변경을 감지해 자동 배포
-- 현재 앱 기준인 `PostgreSQL + Flyway + Redis + Kafka` 구성을 반영
+핵심 원칙:
+- `infra-local`: 홈랩 / kubeadm / 로컬 인증서 / 로컬 dev values
+- `infra-aws`: EKS / Terraform / AWS 전용 Helm override
+- `infra-shared`: 공통 Helm chart / Argo CD / CI/CD 스크립트
 
 ## 디렉토리 구조
 
 ```text
 code/infra
-├── argocd
-│   └── README.md
-├── cicd
-│   └── README.md
-├── environments
-│   └── dev
-│       └── README.md
-├── kubeadm
-│   ├── README.md
-│   └── docs
-│       ├── 01-target-architecture.md
-│       ├── 02-bootstrap-runbook.md
-│       └── 03-post-install-addons.md
-└── helm
-    ├── chat-server
-    │   └── README.md
-    └── frontend
-        └── README.md
+├── infra-local
+│   ├── certs
+│   ├── environments
+│   └── kubeadm
+├── infra-aws
+│   ├── helm-values
+│   └── terraform
+└── infra-shared
+    ├── argocd
+    ├── cicd
+    └── helm
 ```
 
 ## 역할 분리
 
-- `helm/`
-  - 클러스터 위에 배포할 애플리케이션과 플랫폼 차트
-- `environments/`
-  - 환경별 override values
-- `argocd/`
-  - GitOps application manifest
-- `cicd/`
-  - Jenkins 등 CI/CD 보조 스크립트
-- `kubeadm/`
-  - 클러스터 자체를 만드는 과정과 운영 runbook
+- `infra-local/`
+  - 홈랩용 클러스터 부트스트랩, 로컬 TLS, dev 환경값
+- `infra-aws/`
+  - EKS Terraform, AWS Load Balancer Controller override, 향후 Route53/ACM/ECR 자산
+- `infra-shared/`
+  - 환경과 무관하게 재사용할 공통 Helm chart / Argo CD / CI 스크립트
 
-## ingress 
+## 로컬 dev 배포 예시
+
+### ingress-nginx
 
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -59,58 +47,70 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.service.type=NodePort
 ```
 
-## argocd
+### Argo CD
 
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
 helm upgrade --install argocd argo/argo-cd \
-  -f environments/dev/platform/argocd-values.yaml \
+  -f infra-local/environments/dev/platform/argocd-values.yaml \
   -n argocd \
   --create-namespace
 ```
 
-## data
+### data
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 
-helm upgrade --install postgresql bitnami/postgresql \
-  -f environments/dev/data/postgresql-values.yaml \
+helm upgrade --install mysql bitnami/mysql \
+  -f infra-local/environments/dev/data/mysql-values.yaml \
   -n dev --create-namespace
 
 helm upgrade --install redis bitnami/redis \
-  -f environments/dev/data/redis-values.yaml \
+  -f infra-local/environments/dev/data/redis-values.yaml \
   -n dev --create-namespace
 
 helm upgrade --install kafka bitnami/kafka \
-  -f environments/dev/data/kafka-values.yaml \
+  -f infra-local/environments/dev/data/kafka-values.yaml \
   -n dev --create-namespace
 ```
 
-## jenkins
+### Jenkins
 
 ```bash
-kubectl apply -f environments/dev/platform/jenkins-secrets.local.yaml
+kubectl apply -f infra-local/environments/dev/platform/jenkins-secrets.local.yaml
 
-helm upgrade --install jenkins ./helm/jenkins-controller \
-  -f environments/dev/platform/jenkins-values.yaml \
+helm upgrade --install jenkins ./infra-shared/helm/jenkins-controller \
+  -f infra-local/environments/dev/platform/jenkins-values.yaml \
   -n dev --create-namespace
 ```
 
-설치가 끝나면 Jenkins 안에 `chat-server-dev`, `frontend-dev` pipeline job 이 자동으로 생성됩니다.
-
-
-## apps
+### apps
 
 ```bash
-helm upgrade --install chat-server ./helm/chat-server \
-  -f environments/dev/apps/chat-server-values.yaml \
+helm upgrade --install chat-server ./infra-shared/helm/chat-server \
+  -f infra-local/environments/dev/apps/chat-server-values.yaml \
   -n dev --create-namespace
 
-helm upgrade --install frontend ./helm/frontend \
-  -f environments/dev/apps/frontend-values.yaml \
+helm upgrade --install frontend ./infra-shared/helm/frontend \
+  -f infra-local/environments/dev/apps/frontend-values.yaml \
   -n dev --create-namespace
+```
+
+## AWS EKS 쪽 기준
+
+- Terraform: `infra-aws/terraform/eks`
+- ALB / EKS용 Helm override: `infra-aws/helm-values`
+- 공통 chart는 그대로 `infra-shared/helm`
+
+예:
+
+```bash
+helm upgrade --install chat-server ./infra-shared/helm/chat-server \
+  -f infra-local/environments/dev/apps/chat-server-values.yaml \
+  -f infra-aws/helm-values/chat-server-alb-values.example.yaml \
+  -n dev
 ```

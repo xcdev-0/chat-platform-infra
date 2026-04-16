@@ -16,7 +16,7 @@
 적용 순서:
 
 ```bash
-kubectl apply -f argocd/root/dev-apps.yaml
+kubectl apply -f infra-shared/argocd/root/dev-apps.yaml
 ```
 
-위 root application 하나만 적용하면 Argo CD가 `argocd/apps/` 아래의 `chat-server-dev`, `frontend-dev` application 을 같이 관리합니다.
+위 root application 하나만 적용하면 Argo CD가 `infra-shared/argocd/apps/` 아래의 `chat-server-dev`, `frontend-dev` application 을 같이 관리합니다.
