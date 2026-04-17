@@ -63,6 +63,12 @@ variable "node_group_instance_types" {
   default     = ["t4g.medium"]
 }
 
+variable "node_group_name" {
+  description = "Managed node group 이름"
+  type        = string
+  default     = "capstone-dev-eks-small"
+}
+
 variable "node_group_ami_type" {
   description = "Managed node group AMI type"
   type        = string

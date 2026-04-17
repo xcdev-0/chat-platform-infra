@@ -33,6 +33,7 @@ resource "aws_iam_role" "this" {
   })
 }
 
+# role에 붙는 permission policy
 resource "aws_iam_role_policy_attachment" "cluster_policy" {
   # EKS control plane 기본 운영 권한
   role       = aws_iam_role.this.name

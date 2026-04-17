@@ -59,6 +59,7 @@ module "node_group" {
   source = "./modules/node-group"
 
   cluster_name   = module.cluster.cluster_name
+  node_group_name = var.node_group_name
   subnet_ids     = module.network.private_subnet_ids
   instance_types = var.node_group_instance_types
   ami_type       = var.node_group_ami_type

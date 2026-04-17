@@ -8,6 +8,11 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "node_group_name" {
+  description = "Managed node group name"
+  type        = string
+}
+
 variable "instance_types" {
   description = "Managed node group instance types"
   type        = list(string)
