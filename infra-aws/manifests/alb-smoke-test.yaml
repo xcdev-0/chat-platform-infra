@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alb-smoke
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alb-smoke
+  namespace: alb-smoke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alb-smoke
+  template:
+    metadata:
+      labels:
+        app: alb-smoke
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.29.3-alpine-slim
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alb-smoke
+  namespace: alb-smoke
+spec:
+  selector:
+    app: alb-smoke
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alb-smoke
+  namespace: alb-smoke
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: alb-smoke
+                port:
+                  number: 80
