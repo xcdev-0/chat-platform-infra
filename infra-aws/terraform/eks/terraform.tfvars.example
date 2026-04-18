@@ -2,8 +2,8 @@ aws_region                            = "ap-northeast-2"
 cluster_endpoint_public_access_cidrs  = ["203.0.113.10/32"]
 cluster_version                       = "1.33"
 
-node_group_name           = "capstone-dev-eks-small"
-node_group_instance_types = ["t4g.small"]
+node_group_name           = "capstone-dev-eks-x86"
+node_group_instance_types = ["t3.small"]
 node_group_capacity_type  = "ON_DEMAND"
 node_group_desired_size   = 1
 node_group_min_size       = 1

@@ -60,19 +60,19 @@ variable "cluster_log_retention_days" {
 variable "node_group_instance_types" {
   description = "Managed node group 인스턴스 타입"
   type        = list(string)
-  default     = ["t4g.medium"]
+  default     = ["t3.small"]
 }
 
 variable "node_group_name" {
   description = "Managed node group 이름"
   type        = string
-  default     = "capstone-dev-eks-small"
+  default     = "capstone-dev-eks-x86"
 }
 
 variable "node_group_ami_type" {
   description = "Managed node group AMI type"
   type        = string
-  default     = "AL2023_ARM_64_STANDARD"
+  default     = "AL2023_x86_64_STANDARD"
 }
 
 variable "node_group_capacity_type" {
@@ -84,19 +84,19 @@ variable "node_group_capacity_type" {
 variable "node_group_desired_size" {
   description = "Managed node group desired size"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "node_group_min_size" {
   description = "Managed node group min size"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "node_group_max_size" {
   description = "Managed node group max size"
   type        = number
-  default     = 3
+  default     = 2
 }
 
 variable "node_group_disk_size_gib" {

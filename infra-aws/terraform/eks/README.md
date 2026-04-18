@@ -58,10 +58,17 @@ eks
 
 ### node-group
 - managed node group
-- 기본 instance type 은 `t4g.medium`
-- 기본 AMI 는 `AL2023_ARM_64_STANDARD`
+- 기본 instance type 은 `t3.small`
+- 기본 AMI 는 `AL2023_x86_64_STANDARD`
 
-`arm64` 를 기본으로 둔 이유는 비용 대비 효율이 좋고, 지금 프로젝트도 arm64 환경과 크게 충돌하지 않기 때문입니다.
+지금은 `x86_64` 를 기본으로 둡니다.  
+이유는 현재 Jenkins 파이프라인이 기본적으로 `amd64` 이미지를 만들고 있고, 프론트 `kaniko` 빌드를 멀티 아키텍처로 확장하는 비용이 큽니다.
+
+즉 1차 포트폴리오 기준에서는:
+- EKS node group 은 `t3.small` + `x86_64`
+- Jenkins 빌드 산출물도 `amd64`
+
+로 맞춰서 경로를 단순하게 가져가는 편이 낫습니다.
 
 ## 버전 기준
 
