@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: chat-server-dev
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/xcdev-0/chat-platform-infra.git
+    targetRevision: main
+    path: infra-shared/helm/chat-server
+    helm:
+      releaseName: chat-server
+      valueFiles:
+        - ../../../infra-aws/environments/dev/apps/chat-server-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

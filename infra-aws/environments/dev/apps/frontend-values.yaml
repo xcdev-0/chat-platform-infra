@@ -1,5 +1,14 @@
-# EKS + AWS Load Balancer Controller 용 frontend override values
-# 실제 적용 전 아래 host / backend URL 은 보유한 도메인으로 바꿔야 한다.
+# EKS frontend values
+# 도메인 없이 ALB 기본 DNS 하나로 검증하기 위해 host 없는 path routing 을 사용한다.
+
+replicaCount: 1
+
+image:
+  repository: docker.io/spotifyyyyy/chat-frontend
+  tag: cc852e075780
+  pullPolicy: Always
+
+imagePullSecrets: []
 
 ingress:
   enabled: true
@@ -12,12 +21,23 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     alb.ingress.kubernetes.io/healthcheck-path: /health
   hosts:
-    - host: frontend.example.com
+    - host: ""
       paths:
         - path: /
           pathType: Prefix
   tls: []
 
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
 backend:
-  apiUrl: https://api.example.com/api
-  wsUrl: wss://api.example.com/ws/chat
+  apiUrl: /api
+  wsUrl: /ws/chat
+
+frontend:
+  debug: true

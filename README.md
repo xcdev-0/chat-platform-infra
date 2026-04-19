@@ -4,7 +4,7 @@
 
 핵심 원칙:
 - `infra-local`: 홈랩 / kubeadm / 로컬 인증서 / 로컬 dev values
-- `infra-aws`: EKS / Terraform / AWS 전용 Helm override
+- `infra-aws`: EKS / Terraform / AWS 전용 dev values / Argo Application
 - `infra-shared`: 공통 Helm chart / Argo CD / CI/CD 스크립트
 
 ## 디렉토리 구조
@@ -16,7 +16,8 @@ code/infra
 │   ├── environments
 │   └── kubeadm
 ├── infra-aws
-│   ├── helm-values
+│   ├── argocd
+│   ├── environments
 │   └── terraform
 └── infra-shared
     ├── argocd
@@ -29,7 +30,7 @@ code/infra
 - `infra-local/`
   - 홈랩용 클러스터 부트스트랩, 로컬 TLS, dev 환경값
 - `infra-aws/`
-  - EKS Terraform, AWS Load Balancer Controller override, 향후 Route53/ACM/ECR 자산
+  - EKS Terraform, AWS 전용 app/platform values, Argo CD app 정의
 - `infra-shared/`
   - 환경과 무관하게 재사용할 공통 Helm chart / Argo CD / CI 스크립트
 
@@ -103,14 +104,16 @@ helm upgrade --install frontend ./infra-shared/helm/frontend \
 ## AWS EKS 쪽 기준
 
 - Terraform: `infra-aws/terraform/eks`
-- ALB / EKS용 Helm override: `infra-aws/helm-values`
+- EKS app values: `infra-aws/environments/dev/apps`
+- EKS platform values: `infra-aws/environments/dev/platform`
+- EKS raw manifest: `infra-aws/environments/dev/manifests`
+- EKS Argo apps: `infra-aws/argocd`
 - 공통 chart는 그대로 `infra-shared/helm`
 
 예:
 
 ```bash
 helm upgrade --install chat-server ./infra-shared/helm/chat-server \
-  -f infra-local/environments/dev/apps/chat-server-values.yaml \
-  -f infra-aws/helm-values/chat-server-alb-values.example.yaml \
+  -f infra-aws/environments/dev/apps/chat-server-values.yaml \
   -n dev
 ```

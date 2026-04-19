@@ -1,7 +1,7 @@
 
 clusterName: capstone-dev-eks
 region: ap-northeast-2
-vpcId: vpc-03866b22ae07b586b
+vpcId: vpc-0aee0ce7b4971eab2
 replicaCount: 2
 
 serviceAccount:

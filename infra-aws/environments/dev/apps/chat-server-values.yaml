@@ -1,0 +1,96 @@
+# EKS chat-server values
+# 도메인 없이 ALB 기본 DNS 하나로 검증하기 위해 host 없는 path routing 을 사용한다.
+
+replicaCount: 1
+
+image:
+  repository: docker.io/spotifyyyyy/chat-server
+  tag: 97c4c84cd577
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/group.name: capstone-public
+    alb.ingress.kubernetes.io/group.order: "20"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/success-codes: "200"
+  hosts:
+    - host: ""
+      paths:
+        - path: /api
+          pathType: Prefix
+        - path: /ws/chat
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1
+    memory: 1Gi
+
+spring:
+  profile: prod
+
+frontend:
+  url: "*"
+
+database:
+  url: jdbc:mysql://mysql.dev.svc.cluster.local:3306/chatdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+  username: chat
+  ddlAuto: validate
+  flywayEnabled: true
+  flywayBaselineOnMigrate: true
+
+redis:
+  host: redis-master.dev.svc.cluster.local
+  port: 6379
+  username: default
+
+kafka:
+  bootstrapServers: kafka.dev.svc.cluster.local:9092
+  topics:
+    chatMessageCreated: chat.message.created
+    chatRoomRead: chat.room.read
+    chatDlq: chat.dlq
+  consumer:
+    maxRetryCount: 3
+    retryBackoffMs: 1000
+
+outbox:
+  relay:
+    fixedDelayMs: 200
+    batchSize: 100
+    maxRetryCount: 10
+
+observability:
+  springdocApiDocsEnabled: true
+  springdocSwaggerUiEnabled: true
+  logRootLevel: info
+  logSpringLevel: info
+  logAppLevel: debug
+
+secret:
+  create: true
+  name: ""
+  env:
+    DB_PASSWORD: chat1234
+    REDIS_PASSWORD: ""
+    JWT_SECRET: T+FITVBc8qEi9tZ/TgN7mfZ9wb0BqArbh4B+RMZ9zKU=
+    AUTH_COOKIE_SECURE: "false"
+    AUTH_COOKIE_DOMAIN: ""
+
+truststore:
+  enabled: false
+  secretName: kafka-truststore
+  mountPath: /app/config
+  fileName: kafka.truststore.jks

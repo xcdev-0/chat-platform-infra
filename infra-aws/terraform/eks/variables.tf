@@ -60,7 +60,7 @@ variable "cluster_log_retention_days" {
 variable "node_group_instance_types" {
   description = "Managed node group 인스턴스 타입"
   type        = list(string)
-  default     = ["t3.small"]
+  default     = ["t3.medium"]
 }
 
 variable "node_group_name" {
@@ -84,19 +84,19 @@ variable "node_group_capacity_type" {
 variable "node_group_desired_size" {
   description = "Managed node group desired size"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "node_group_min_size" {
   description = "Managed node group min size"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "node_group_max_size" {
   description = "Managed node group max size"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "node_group_disk_size_gib" {

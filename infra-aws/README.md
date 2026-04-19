@@ -124,7 +124,8 @@ AWS
 ```text
 infra-aws
 ├── README.md
-├── helm-values
+├── argocd
+├── environments
 └── terraform
     └── eks
 ```
@@ -132,6 +133,20 @@ infra-aws
 `eks`:
 - 메인 포트폴리오 대상
 - 실제로 깊게 가져갈 스택
+
+`argocd`:
+- EKS 전용 Argo CD `Application` 정의
+
+`environments/dev/apps`:
+- EKS 전용 frontend / chat-server values
+- 현재는 `example.com` placeholder 를 사용하므로 실제 배포 전 도메인 교체가 필요
+
+`environments/dev/platform`:
+- `aws-load-balancer-controller`, `argocd` 같은 플랫폼 values
+
+`environments/dev/manifests`:
+- Helm 바깥에서 직접 apply 하는 raw manifest
+- 예: Argo CD ALB ingress, smoke test ingress
 
 ## 면접에서 가져갈 메시지
 

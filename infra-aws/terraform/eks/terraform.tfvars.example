@@ -3,11 +3,11 @@ cluster_endpoint_public_access_cidrs  = ["203.0.113.10/32"]
 cluster_version                       = "1.33"
 
 node_group_name           = "capstone-dev-eks-x86"
-node_group_instance_types = ["t3.small"]
+node_group_instance_types = ["t3.medium"]
 node_group_capacity_type  = "ON_DEMAND"
-node_group_desired_size   = 1
-node_group_min_size       = 1
-node_group_max_size       = 2
+node_group_desired_size   = 2
+node_group_min_size       = 2
+node_group_max_size       = 3
 
 aws_load_balancer_controller_namespace            = "kube-system"
 aws_load_balancer_controller_service_account_name = "aws-load-balancer-controller"
