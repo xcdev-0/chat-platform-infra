@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://charts.bitnami.com/bitnami
       chart: mysql
-      targetRevision: 14.0.3
+      targetRevision: 12.3.5
       helm:
         releaseName: mysql
         valueFiles:
