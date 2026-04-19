@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins-dev
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/xcdev-0/chat-platform-infra.git
+    targetRevision: main
+    path: infra-shared/helm/jenkins-controller
+    helm:
+      releaseName: jenkins
+      valueFiles:
+        - ../../../infra-aws/environments/dev/platform/jenkins-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

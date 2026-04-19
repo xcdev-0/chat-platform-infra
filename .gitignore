@@ -1,3 +1,4 @@
 infra-local/environments/dev/platform/jenkins-secrets.local.yaml
+infra-aws/environments/dev/platform/jenkins-secrets.local.yaml
 infra-local/certs/generated/
 .DS_Store
