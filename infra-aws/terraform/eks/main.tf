@@ -10,6 +10,12 @@ data "tls_certificate" "cluster_oidc" {
   depends_on = [module.cluster]
 }
 
+data "aws_eks_addon_version" "ebs_csi" {
+  addon_name         = "aws-ebs-csi-driver"
+  kubernetes_version = var.cluster_version
+  most_recent        = true
+}
+
 locals {
   # 공통 이름 규칙:
   # capstone-dev, capstone-dev-eks 같은 식으로 리소스 이름을 통일한다.
@@ -98,4 +104,33 @@ module "aws_load_balancer_controller_irsa" {
   service_account_name = var.aws_load_balancer_controller_service_account_name
   policy_json          = file("${path.module}/policies/aws-load-balancer-controller-iam-policy.json")
   common_tags          = local.common_tags
+}
+
+module "aws_ebs_csi_driver_irsa" {
+  # EBS CSI controller pod 가 AWS EBS 볼륨을 생성/연결할 때 쓸 IAM role
+  source = "./modules/irsa-role"
+
+  role_name            = "${local.name}-ebs-csi-driver-role"
+  oidc_provider_arn    = aws_iam_openid_connect_provider.cluster.arn
+  oidc_provider_url    = module.cluster.cluster_oidc_issuer
+  namespace            = var.ebs_csi_driver_namespace
+  service_account_name = var.ebs_csi_driver_service_account_name
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  ]
+  common_tags = local.common_tags
+}
+
+resource "aws_eks_addon" "aws_ebs_csi_driver" {
+  cluster_name             = module.cluster.cluster_name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = data.aws_eks_addon_version.ebs_csi.version
+  service_account_role_arn = module.aws_ebs_csi_driver_irsa.role_arn
+
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.cluster_name}-aws-ebs-csi-driver"
+  })
 }

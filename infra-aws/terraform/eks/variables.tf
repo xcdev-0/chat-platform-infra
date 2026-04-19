@@ -116,3 +116,15 @@ variable "aws_load_balancer_controller_service_account_name" {
   type        = string
   default     = "aws-load-balancer-controller"
 }
+
+variable "ebs_csi_driver_namespace" {
+  description = "Namespace for the EBS CSI driver controller ServiceAccount"
+  type        = string
+  default     = "kube-system"
+}
+
+variable "ebs_csi_driver_service_account_name" {
+  description = "ServiceAccount name for the EBS CSI driver controller"
+  type        = string
+  default     = "ebs-csi-controller-sa"
+}
