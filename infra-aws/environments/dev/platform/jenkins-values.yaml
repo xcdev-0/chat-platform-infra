@@ -80,6 +80,9 @@ controller:
         jobs:
           - script: |
               pipelineJob('chat-server-dev') {
+                triggers {
+                  githubPush()
+                }
                 definition {
                   cpsScm {
                     scm {
@@ -97,6 +100,9 @@ controller:
               }
           - script: |
               pipelineJob('frontend-dev') {
+                triggers {
+                  githubPush()
+                }
                 definition {
                   cpsScm {
                     scm {
